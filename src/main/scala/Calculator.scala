@@ -1,8 +1,8 @@
 package com.knoldus.calculator
+
 import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.util.{Failure, Success}
 
 // Adding the numbers.
 object AddTheNumbers extends ValidateOperator {
@@ -48,8 +48,8 @@ object DivideTheNumbers extends ValidateOperator {
 
   override def validate(operands: Seq[Double]): Boolean = {
     if (operands.size == 2)
-      if(operands.last == 0) throw new ArithmeticException("Can't Divide By Zero")
-      else false
+      if (operands.last == 0) throw new ArithmeticException("Can't Divide By Zero")
+      else true
     else false
   }
 
@@ -128,132 +128,127 @@ object SumTheNumbers extends ValidateOperator {
 
   override protected def execute(operands: Seq[Double]): Seq[Double] = {
 
-    @tailrec
-    def calculateSumOfNumbers(list: List[Double], sum: Double = 0): Double = {
-      list match {
-        case ::(head, next) => calculateSumOfNumbers(next, sum + head)
-        case head :: Nil => head
-      }
-    }
-    Seq(calculateSumOfNumbers(operands.toList, 0))
+    Seq(operands.reduce(_ + _))
   }
 }
 
-  // GCD of the numbers.
-  object GcdOfNumbers extends ValidateOperator {
+// GCD of the numbers.
+object GcdOfNumbers extends ValidateOperator {
 
-    override def validate(operands: Seq[Double]): Boolean = {
-      if (operands.size == 2) true
-      else false
+  override def validate(operands: Seq[Double]): Boolean = {
+    if (operands.size == 2) true
+    else false
+  }
+
+  override protected def execute(operands: Seq[Double]): Seq[Double] = {
+
+    @tailrec
+    def FindGcd(num1: Double, num2: Double): Double = {
+      if (num2 == 0) num1 else FindGcd(num2, num1 % num2)
     }
 
-    override protected def execute(operands: Seq[Double]): Seq[Double] = {
+    Seq(FindGcd(operands.head, operands.last))
+  }
+}
 
+
+// Odd numbers in the Seq.
+object OddNumbers extends ValidateOperator {
+
+  override def validate(operands: Seq[Double]): Boolean = {
+    if (operands.nonEmpty) true
+    else false
+  }
+
+  override protected def execute(operands: Seq[Double]): Seq[Double] = {
+    operands.filter(_ % 2 == 0)
+  }
+}
+
+// Even numbers in the Seq.
+object EvenNumbers extends ValidateOperator {
+
+  override def validate(operands: Seq[Double]): Boolean = {
+    if (operands.nonEmpty) true
+    else false
+  }
+
+  override protected def execute(operands: Seq[Double]): Seq[Double] = {
+    operands.filterNot(_ % 2 == 0)
+  }
+}
+
+// Fibonacci .
+object Fibonacci extends ValidateOperator {
+
+  override def validate(operands: Seq[Double]): Boolean = {
+    if (operands.size == 1) true
+    else false
+  }
+
+  override protected def execute(operands: Seq[Double]): Seq[Double] = {
+    @tailrec
+    def fibonacci(number: Double, first: Double, second: Double, list: Seq[Double]): Seq[Double] = {
+      if (number == 0) list
+      else fibonacci(number - 1, second, second + first, list :+ first)
+    }
+
+    fibonacci(operands.head, 0, 1, Seq())
+  }
+}
+
+object ExpressionEvaluator {
+
+  def squareOfExpression(firstOperand: Double, secondOperand: Double): String = {
+
+    val add = AddTheNumbers
+    val power = PowerOfTheNumber
+    val mul = MultiplyTheNumbers
+    val list = Seq(firstOperand, secondOperand)
+    val LhsResult = power.validateAndExecute(add.validateAndExecute(list) ++ Seq(2.0))
+    val RhsHalfResult = add.validateAndExecute(power.validateAndExecute(Seq(firstOperand, 2)) ++ power.validateAndExecute(Seq(secondOperand, 2)))
+    val RhsTotalResult = add.validateAndExecute(RhsHalfResult ++ mul.validateAndExecute(mul.validateAndExecute(Seq(2, firstOperand)) ++ Seq(secondOperand)))
+    if (LhsResult == RhsTotalResult) "Equal"
+    else "Not Equal"
+  }
+
+  /* This method is used to find the number whose factorial is greater than 6^num */
+  def find(numbers: Seq[Double]): Future[Seq[Double]] = {
+
+    @tailrec
+    def findFactorial(number: Double, result: Double): Double = {
+      if (number <= 1) result
+      else findFactorial(number - 1, result * number)
+    }
+
+    val finalResult = numbers.filter { num =>
+      val result = findFactorial(num, 1)
+      result > math.pow(6, num)
+    }
+    Future(finalResult)
+  }
+
+  /* This method is used to find the average after performing the fibonacci on each number, filter the odd elements */
+  def findAverageAfterChainingOperations(numbers: Seq[Double]): Future[Double] = {
+    Future {
       @tailrec
-      def FindGcd(num1: Double, num2: Double): Double = {
-        if (num2 == 0) num1 else FindGcd(num2, num1 % num2)
+      def fibonacci(times: Double, numberOne: Double, numberTwo: Double): Double = {
+        if (times <= 1) numberTwo
+        else fibonacci(times - 1, numberTwo, numberOne + numberTwo)
       }
-      Seq(FindGcd(operands.head, operands.last))
+
+      val filteredDataNumbers = numbers.filter { num =>
+        val result = fibonacci(num.toInt, 0, 1)
+        result % 2 != 0
+      }
+      filteredDataNumbers.foldLeft(0.0)((numOne: Double, numTwo: Double) => numOne + numTwo) / filteredDataNumbers.size
     }
   }
+}
 
+object Calculator {
 
-  // Odd numbers in the Seq.
-  object OddNumbers extends ValidateOperator {
-
-    override def validate(operands: Seq[Double]): Boolean = {
-      if (operands.nonEmpty) true
-      else false
-    }
-
-    override protected def execute(operands: Seq[Double]): Seq[Double] = {
-      operands.filter(_ % 2 == 0)
-    }
-  }
-
-  // Even numbers in the Seq.
-  object EvenNumbers extends ValidateOperator {
-
-    override def validate(operands: Seq[Double]): Boolean = {
-      if (operands.nonEmpty) true
-      else false
-    }
-
-    override protected def execute(operands: Seq[Double]): Seq[Double] = {
-      operands.filterNot(_ % 2 == 0)
-    }
-  }
-
-  // Fibonacci .
-  object Fibonacci extends ValidateOperator {
-
-    override def validate(operands: Seq[Double]): Boolean = {
-      if (operands.size == 1) true
-      else false
-    }
-
-    override protected def execute(operands: Seq[Double]): Seq[Double] = {
-      @tailrec
-      def fibonacci(number: Double, first: Double, second: Double, list: Seq[Double]): Seq[Double] = {
-        if (number == 0) list
-        else fibonacci(number - 1, second, second + first, list :+ first)
-      }
-      fibonacci(operands.head, 0, 1, Seq())
-    }
-  }
-
-  object ExpressionEvaluator  {
-
-      def squareOfExpression(firstOperand : Double, secondOperand : Double) : String ={
-
-        val add = AddTheNumbers
-        val power = PowerOfTheNumber
-        val mul = MultiplyTheNumbers
-        val list = Seq(firstOperand,secondOperand)
-        val LhsResult = power.validateAndExecute(add.validateAndExecute(list) ++ Seq(2.0))
-        val RhsHalfResult = add.validateAndExecute(power.validateAndExecute(Seq(firstOperand, 2)) ++ power.validateAndExecute(Seq(secondOperand, 2)))
-        val  RhsTotalResult = add.validateAndExecute(RhsHalfResult ++ mul.validateAndExecute(mul.validateAndExecute(Seq(2, firstOperand)) ++ Seq(secondOperand)))
-        if (LhsResult == RhsTotalResult) "Equal"
-        else "Not Equal"
-      }
-
-    /* This method is used to find the number whose factorial is greater than 6^num */
-    def find(numbers: Seq[Double]): Future[Seq[Double]] = {
-
-      @tailrec
-      def findFactorial(number: Double, result: Double): Double = {
-        if (number <= 1) result
-        else findFactorial(number - 1, result * number)
-      }
-
-      val finalResult = numbers.filter { num =>
-        val result = findFactorial(num, 1)
-        result > math.pow(6, num)
-      }
-      Future(finalResult)
-    }
-
-    /* This method is used to find the average after performing the fibonacci on each number, filter the odd elements */
-    def findAverageAfterChainingOperations(numbers: Seq[Double]): Future[Double] = {
-      Future {
-        @tailrec
-        def fibonacci(times: Double, numberOne: Double, numberTwo: Double): Double = {
-          if (times <= 1) numberTwo
-          else fibonacci(times - 1, numberTwo, numberOne + numberTwo)
-        }
-
-        val filteredDataNumbers = numbers.filter { num =>
-          val result = fibonacci(num.toInt, 0, 1)
-          result % 2 != 0
-        }
-        filteredDataNumbers.foldLeft(0.0)((numOne: Double, numTwo: Double) => numOne + numTwo) / filteredDataNumbers.size
-      }
-    }
-  }
-
-object Calculator  {
-
-   def calculate(operator: String, operands: Seq[Double]): Future[Seq[Double]] = {
+  def calculate(operator: String, operands: Seq[Double]): Future[Seq[Double]] = {
 
     operator match {
       case "+" => execute(AddTheNumbers, operands)
@@ -272,9 +267,9 @@ object Calculator  {
     }
   }
 
-   def execute(operator: Operator, operands: Seq[Double]): Future[Seq[Double]] = {
+  def execute(operator: Operator, operands: Seq[Double]): Future[Seq[Double]] = {
 
-    Future{
+    Future {
       operator.validateAndExecute(operands)
     }
 

@@ -11,83 +11,83 @@ object CalculatorDriver extends App {
   private val addResult = calculator.calculate("+", Seq(2.0, 3.0))
   addResult.onComplete {
     case Success(value) => println(s"Add Result: $value")
-    case Failure(exception) => println(s"Exception: ${exception.getMessage}")
+    case Failure(exception) => println(s"Exception in addResult: ${exception.getMessage}")
   }
 
   // Subtract
-  private val subtractResult = calculator.calculate("-",Seq(5.0, 3.0))
+  private val subtractResult = calculator.calculate("-", Seq(5.0, 3.0))
   subtractResult.onComplete {
     case Success(value) => println(s"Subtract Result: $value")
-    case Failure(exception) => println(s"Exception: ${exception.getMessage}")
+    case Failure(exception) => println(s"Exception in subtractResult: ${exception.getMessage}")
   }
 
   // Multiply
-   private val multiplyResult = calculator.calculate("*", Seq(2.0, 3.0))
+  private val multiplyResult = calculator.calculate("*", Seq(2.0, 3.0))
   multiplyResult.onComplete {
     case Success(value) => println(s"Multiply Result: $value")
-    case Failure(exception) => println(s"Exception: ${exception.getMessage}")
+    case Failure(exception) => println(s"Exception in multiplyResult: ${exception.getMessage}")
   }
 
   // Divide
-  private val divideResult = calculator.calculate("/",Seq(6.0, 3.0))
+  private val divideResult = calculator.calculate("/", Seq(6.0, 3.0))
   divideResult.onComplete {
     case Success(value) => println(s"Divide Result: $value")
-    case Failure(exception) => println(s"Exception: ${exception.getMessage}")
+    case Failure(exception) => println(s"Exception in divideResult: ${exception.getMessage}")
   }
 
   // Power
-  private val powerResult = calculator.calculate("^",Seq(2.0, 4.0))
+  private val powerResult = calculator.calculate("^", Seq(2.0, 4.0))
   powerResult.onComplete {
     case Success(value) => println(s"Power Result: $value")
-    case Failure(exception) => println(s"Exception: ${exception.getMessage}")
+    case Failure(exception) => println(s"Exception in powerResult: ${exception.getMessage}")
   }
 
   // Square root
-  private val sqrtResult = calculator.calculate("sqrt",Seq(9))
+  private val sqrtResult = calculator.calculate("sqrt", Seq(9))
   sqrtResult.onComplete {
     case Success(value) => println(s"Square Root Result: $value")
-    case Failure(exception) => println(s"Exception: ${exception.getMessage}")
+    case Failure(exception) => println(s"Exception in sqrtResult: ${exception.getMessage}")
   }
 
   // Factorial
-  private val factorialResult = calculator.calculate("!",Seq(5))
+  private val factorialResult = calculator.calculate("!", Seq(5))
   factorialResult.onComplete {
     case Success(value) => println(s"Factorial Result: $value")
-    case Failure(exception) => println(s"Exception: ${exception.getMessage}")
+    case Failure(exception) => println(s"Exception in factorialResult: ${exception.getMessage}")
   }
 
   // Sum
-  private val sumResult = calculator.calculate("sum",Seq(1, 2, 3, 4, 5))
+  private val sumResult = calculator.calculate("sum", Seq(1, 2, 3, 4, 5))
   sumResult.onComplete {
     case Success(value) => println(s"Sum Result: $value")
-    case Failure(exception) => println(s"Exception: ${exception.getMessage}")
+    case Failure(exception) => println(s"Exception in sumResult: ${exception.getMessage}")
   }
 
   // GCD
-  private val gcdResult = calculator.calculate("gcd",Seq(20, 30))
+  private val gcdResult = calculator.calculate("gcd", Seq(20, 30))
   gcdResult.onComplete {
     case Success(value) => println(s"GCD Result: $value")
-    case Failure(exception) => println(s"Exception: ${exception.getMessage}")
+    case Failure(exception) => println(s"Exception in gcdResult: ${exception.getMessage}")
   }
 
   // Odd Numbers
-  private val oddNumbersResult = calculator.calculate("odd",Seq(1, 2, 3, 4, 5))
+  private val oddNumbersResult = calculator.calculate("odd", Seq(1, 2, 3, 4, 5))
   oddNumbersResult.onComplete {
     case Success(value) => println(s"Odd Numbers Result: $value")
-    case Failure(exception) => println(s"Exception: ${exception.getMessage}")
+    case Failure(exception) => println(s"Exception in oddNumbersResult: ${exception.getMessage}")
   }
 
   // Even Numbers
-  private val evenNumbersResult = calculator.calculate("even",List(1, 2, 3, 4, 5))
+  private val evenNumbersResult = calculator.calculate("even", List(1, 2, 3, 4, 5))
   evenNumbersResult.onComplete {
     case Success(value) => println(s"Even Numbers Result: $value")
-    case Failure(exception) => println(s"Exception: ${exception.getMessage}")
+    case Failure(exception) => println(s"Exception in evenNumbersResult: ${exception.getMessage}")
   }
 
   // Fibonacci
-  private val fibonacciResult = calculator.calculate("fibonacci",Seq(5))
+  private val fibonacciResult = calculator.calculate("fibonacci", Seq(5))
   fibonacciResult.onComplete {
-    case Failure(exception) => println(s"Exception: ${exception.getMessage}")
+    case Failure(exception) => println(s"Exception in fibonacciResult: ${exception.getMessage}")
     case Success(value) => println(s"Fibonacci Result: $value")
   }
 
@@ -103,14 +103,14 @@ object CalculatorDriver extends App {
   private val findNumbers = expressionEvaluator.find(Seq(100.0, 200.0, 10.0))
   findNumbers.onComplete {
     case Success(value) => println("Factorial Greater than 6^n :" + value)
-    case Failure(exception) => println("Error", exception)
+    case Failure(exception) => println("Exception in squareOfExpression ", exception)
   }
 
   // calling the find Average method to perform the operations
   private val averageAfterChaining = expressionEvaluator.findAverageAfterChainingOperations(Seq(4.0, 3.0, 5.0, 10.0))
   averageAfterChaining.onComplete {
     case Success(value) => println(s"$value")
-    case Failure(exception) => println("Error", exception)
+    case Failure(exception) => println("Exception in findAverageAfterChainingOperations", exception)
   }
   // Wait for all the futures to complete
   Thread.sleep(1000)
