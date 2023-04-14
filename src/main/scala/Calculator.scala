@@ -232,16 +232,16 @@ object ExpressionEvaluator {
   def findAverageAfterChainingOperations(numbers: Seq[Double]): Future[Double] = {
     Future {
       @tailrec
-      def fibonacci(times: Double, numberOne: Double, numberTwo: Double): Double = {
-        if (times <= 1) numberTwo
-        else fibonacci(times - 1, numberTwo, numberOne + numberTwo)
+      def fibonacci(times: Double, number1: Double, number2: Double): Double = {
+        if (times <= 1) number2
+        else fibonacci(times - 1, number2, number1 + number2)
       }
 
       val filteredDataNumbers = numbers.filter { num =>
         val result = fibonacci(num.toInt, 0, 1)
         result % 2 != 0
       }
-      filteredDataNumbers.foldLeft(0.0)((numOne: Double, numTwo: Double) => numOne + numTwo) / filteredDataNumbers.size
+      filteredDataNumbers.foldLeft(0.0)((num1: Double, num2: Double) => num1 + num2) / filteredDataNumbers.size
     }
   }
 }
