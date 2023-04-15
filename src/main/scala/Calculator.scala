@@ -212,7 +212,7 @@ object ExpressionEvaluator {
     else "Not Equal"
   }
 
-  /* This method is used to find the number whose factorial is greater than 6^num */
+  // Function to find the number whose factorial is greater than 6^num.
   def find(numbers: Seq[Double]): Future[Seq[Double]] = {
 
     @tailrec
@@ -228,7 +228,7 @@ object ExpressionEvaluator {
     Future(finalResult)
   }
 
-  /* This method is used to find the average after performing the fibonacci on each number, filter the odd elements */
+  // Function to find the average after performing the fibonacci on each number, filter the odd elements
   def findAverageAfterChainingOperations(numbers: Seq[Double]): Future[Double] = {
     Future {
       @tailrec
